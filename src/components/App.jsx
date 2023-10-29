@@ -20,18 +20,23 @@ export class App extends Component {
 
 //LocalStorage
 
-  componentDidMount() {
-    const localStorageData= JSON.parse(localStorage.getItem('contacts'))
-    if(localStorageData) {
-      this.setState({contacts: localStorageData});
-    }
+componentDidUpdate(_, prevState) {
+  if (this.state.contacts !== prevState.contacts) {
+    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
   }
+}
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.contacts.length !== this.state.contacts.length) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts.length));
+componentDidMount() {
+  const contacts = localStorage.getItem('contacts');
+  try {
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
     }
+  } catch (error) {
+    console.log(error);
   }
+}
 
 
   //Sposób przetwarzania formularza - dodanie danych do stanu (dane pobierane są z komponentu ContactForm)
